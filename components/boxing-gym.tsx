@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Canvas, useFrame } from "@react-three/fiber"
+import { Canvas, useFrame, useLoader } from "@react-three/fiber"
 import { PerspectiveCamera, Environment, useKeyboardControls, KeyboardControls, Text } from "@react-three/drei"
 import { Physics, RigidBody } from "@react-three/rapier"
 import * as THREE from "three"
 import { Avatar } from "./avatar"
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 export default function BoxingGym() {
   const [gender, setGender] = useState("male")
@@ -31,6 +32,7 @@ export default function BoxingGym() {
           <Physics>
             <GymScene />
             <PlayerAvatar gender={gender} height={height} weight={weight} />
+            <Model />
           </Physics>
           <Environment preset="city" />
         </Canvas>
@@ -198,4 +200,10 @@ function GymScene() {
       </RigidBody>
     </>
   )
+}
+
+function Model() {
+  const fbx = useLoader(FBXLoader, '/boxgym.fbx')
+
+  return <primitive object={fbx} />
 }
