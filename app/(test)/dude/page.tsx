@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import { useEffect } from 'react'
 
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
@@ -21,62 +22,71 @@ const camera = new THREE.PerspectiveCamera(
 )
 camera.position.set(0.8, 1.4, 1.0)
 
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize(window.innerWidth, window.innerHeight)
-document.body.appendChild(renderer.domElement)
-
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-controls.target.set(0, 1, 0)
-
-//const material = new THREE.MeshNormalMaterial()
-
-const fbxLoader = new FBXLoader()
-fbxLoader.load(
-    'models/xbot.fbx',
-    (object) => {
-        // object.traverse(function (child) {
-        //     if ((child as THREE.Mesh).isMesh) {
-        //         // (child as THREE.Mesh).material = material
-        //         if ((child as THREE.Mesh).material) {
-        //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
-        //         }
-        //     }
-        // })
-        // object.scale.set(.01, .01, .01)
-        scene.add(object)
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-    },
-    (error) => {
-        console.log(error)
-    }
-)
-
-window.addEventListener('resize', onWindowResize, false)
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
+useEffect(() => {
+    const renderer = new THREE.WebGLRenderer()
     renderer.setSize(window.innerWidth, window.innerHeight)
-    render()
-}
+    document.body.appendChild(renderer.domElement)
 
-const stats = new Stats()
-document.body.appendChild(stats.dom)
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.target.set(0, 1, 0)
 
-function animate() {
-    requestAnimationFrame(animate)
+    //const material = new THREE.MeshNormalMaterial()
 
-    controls.update()
+    const fbxLoader = new FBXLoader()
+    fbxLoader.load(
+        'models/xbot.fbx',
+        (object) => {
+            // object.traverse(function (child) {
+            //     if ((child as THREE.Mesh).isMesh) {
+            //         // (child as THREE.Mesh).material = material
+            //         if ((child as THREE.Mesh).material) {
+            //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
+            //         }
+            //     }
+            // })
+            // object.scale.set(.01, .01, .01)
+            scene.add(object)
+        },
+        (xhr) => {
+            console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+        },
+        (error) => {
+            console.log(error)
+        }
+    )
 
-    render()
+    window.addEventListener('resize', onWindowResize, false)
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        render()
+    }
 
-    stats.update()
-}
+    const stats = new Stats()
+    document.body.appendChild(stats.dom)
 
-function render() {
-    renderer.render(scene, camera)
-}
+    function animate() {
+        requestAnimationFrame(animate)
+
+        controls.update()
+
+        render()
+
+        stats.update()
+    }
+
+    function render() {
+        renderer.render(scene, camera)
+    }
+
+    animate()
+
+    return () => {
+        // Cleanup if necessary
+        document.body.removeChild(renderer.domElement)
+    }
+}, []) // Empty dependency array to run only once on mount
 
 animate()
