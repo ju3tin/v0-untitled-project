@@ -11,7 +11,7 @@ const Model = () => {
   const loader = useRef(new FBXLoader())
 
   useEffect(() => {
-    loader.current.load('/boxgym.fbx', (object: THREE.Group) => {
+    loader.current.load('boxgym.fbx', (object: THREE.Group) => {
       console.log('Model loaded:', object)
       object.scale.set(0.01, 0.01, 0.01)
       object.position.set(0, 0, 0)
