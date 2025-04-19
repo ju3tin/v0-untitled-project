@@ -12,11 +12,14 @@ const Model = () => {
 
   useEffect(() => {
     loader.current.load('/boxgym.fbx', (object: THREE.Group) => {
+      console.log('Model loaded:', object)
+      object.scale.set(0.01, 0.01, 0.01)
+      object.position.set(0, 0, 0)
       setModel(object)
     })
   }, [])
 
-  return model ? <primitive object={model} scale={0.01} /> : null
+  return model ? <primitive object={model} /> : null
 }
 
 export default function ModelViewerPage() {
@@ -25,7 +28,12 @@ export default function ModelViewerPage() {
       <Canvas camera={{ position: [0, 1.5, 3] }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[0, 2, 2]} intensity={1} />
-        <Suspense fallback={null}>
+        <Suspense fallback={
+          <mesh>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color="orange" />
+          </mesh>
+        }>
           <Model />
           <Environment preset="sunset" />
         </Suspense>
