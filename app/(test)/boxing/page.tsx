@@ -2,7 +2,7 @@
 "use client"
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import * as THREE from 'three'
 
@@ -11,7 +11,7 @@ const Model = () => {
   const loader = useRef(new FBXLoader())
 
   useEffect(() => {
-    loader.current.load('/models/your-model.fbx', (object) => {
+    loader.current.load('/models/your-model.fbx', (object: THREE.Group) => {
       setModel(object)
     })
   }, [])
